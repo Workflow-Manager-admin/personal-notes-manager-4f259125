@@ -1,0 +1,29 @@
+<div class="layout-root">
+  <aside class="sidebar shadow-sm">
+    <h2>
+      <span class="notebook-icon">🗒️</span>
+      <span>Notes</span>
+    </h2>
+    <nav>
+      <!-- Currently just single nav, but can add more items -->
+      <ul>
+        <li>
+          <span class="nav-bullet"></span> <span>All Notes</span>
+        </li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-accent" (click)="toggleTheme()" title="Switch Mode">
+        {{ theme === 'dark' ? '🌙 Dark' : '☀️ Light' }}
+      </button>
+    </div>
+  </aside>
+  <div class="main-area">
+    <header class="toolbar shadow-sm">
+      <ng-content select="[toolbar]"></ng-content>
+    </header>
+    <main class="layout-content">
+      <ng-content></ng-content>
+    </main>
+  </div>
+</div>

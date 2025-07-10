@@ -1,0 +1,81 @@
+<div class="notes-root">
+
+  <!-- FILTER/Search and Create -->
+  <div class="notes-toolbar">
+    <input
+      type="search"
+      placeholder="Search notes..."
+      [(ngModel)]="searchTerm"
+      (input)="searchChanged()"
+      autocomplete="off"
+    />
+    <button class="btn btn-accent" (click)="createNewNote()" title="Create note">
+      + New Note
+    </button>
+  </div>
+
+  <div class="notes-main">
+    <aside class="note-list shadow-sm card">
+      <div class="note-list-title">
+        <span class="list-header">Your Notes</span>
+        <span *ngIf="loading">⏳</span>
+      </div>
+      <div *ngIf="!filteredNotes.length && !loading" class="no-notes">
+        <span>No notes found.</span>
+      </div>
+      <ul>
+        <li
+          *ngFor="let note of filteredNotes"
+          [class.selected]="selectedNote?.id === note.id"
+          (click)="selectNote(note)"
+          tabindex="0"
+        >
+          <div class="note-title">
+            {{ note.title || 'Untitled' }}
+          </div>
+          <div class="note-date">
+            <span *ngIf="note.updated_at">{{ note.updated_at | date: 'short' }}</span>
+          </div>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Editor / View -->
+    <section class="note-editor card shadow-sm" *ngIf="selectedNote">
+      <div *ngIf="errorMsg" class="error-msg">{{ errorMsg }}</div>
+
+      <ng-container *ngIf="editMode; else viewMode">
+        <input
+          #titleInput
+          placeholder="Note title"
+          [(ngModel)]="selectedNote.title"
+          maxlength="120"
+          required
+        />
+        <textarea
+          [(ngModel)]="selectedNote.content"
+          rows="10"
+          placeholder="Write your note here"
+        ></textarea>
+        <div class="editor-actions">
+          <button class="btn" (click)="saveNote()" [disabled]="saving">
+            {{ selectedNote.id ? 'Update' : 'Create' }}
+          </button>
+          <button *ngIf="selectedNote.id" class="btn btn-accent" (click)="deleteSelectedNote()" [disabled]="saving">
+            Delete
+          </button>
+          <button class="btn" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </ng-container>
+      <ng-template #viewMode>
+        <h3>{{ selectedNote.title || '(Untitled)' }}</h3>
+        <span class="note-editor-date">{{ selectedNote.updated_at | date:'short' }}</span>
+        <pre class="editor-content-view">{{ selectedNote.content }}</pre>
+        <div class="editor-actions">
+          <button class="btn" (click)="editSelectedNote()">Edit</button>
+          <button class="btn btn-accent" (click)="deleteSelectedNote()">Delete</button>
+        </div>
+      </ng-template>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,129 @@
+.notes-root {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+.notes-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1.2em;
+  padding-bottom: .5em;
+}
+.notes-main {
+  display: flex;
+  gap: 1.7em;
+  min-height: 350px;
+}
+.note-list {
+  width: 270px;
+  min-width: 180px;
+  max-width: 330px;
+  padding: 1em;
+  background: var(--sidebar-bg);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.note-list-title {
+  font-weight: 500;
+  font-size: 1.11rem;
+  margin-bottom: 1em;
+  color: var(--text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.no-notes {
+  color: #b4b8c0;
+  padding: .7em 0;
+}
+.note-list ul {
+  padding: 0; margin: 0;
+  list-style: none;
+  flex: 1;
+}
+.note-list ul li {
+  padding: .62em .5em;
+  border-radius: 4px;
+  margin-bottom: 3px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text);
+  transition: background 0.15s;
+  border-left: 3.5px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: .1em;
+}
+.note-list ul li:hover, .note-list ul li.selected {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  border-left: 3.5px solid var(--primary);
+}
+.note-title {
+  font-weight: 500;
+  font-size: 1.01rem;
+  margin-right: 7px;
+  max-width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.note-date {
+  color: #aaa;
+  font-size: 0.85em;
+}
+
+.note-editor {
+  flex: 1 1 430px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .7em;
+  background: var(--card-bg);
+  margin-left: 0.5em;
+  padding: 1.5em 2vw;
+}
+
+.note-editor input[type="text"], .note-editor textarea {
+  font-size: 1.04em;
+  margin-bottom: .9em;
+}
+
+.note-editor h3 {
+  font-size: 1.25rem;
+  margin: .06em 0 0.2em 0;
+}
+.note-editor-date {
+  color: #aaa; font-size: 0.98em;
+}
+.editor-content-view {
+  white-space: pre-wrap;
+  background: transparent;
+  border: none;
+  min-height: 50px;
+  margin: 1em 0;
+  color: var(--text);
+  font-family: inherit;
+}
+.editor-actions {
+  display: flex;
+  gap: 1.2em;
+  margin-top: .8em;
+}
+.error-msg {
+  color: #e53935;
+  padding: .4em 0;
+  font-size: .99em;
+}
+@media (max-width: 970px) {
+  .notes-main {
+    flex-direction: column;
+    gap: 1.2em
+  }
+  .note-list { width: 100%; max-width: unset; min-width: 0; flex: none; }
+  .note-editor { margin-left: 0; padding: 1.1em 3vw; }
+}
+@media (max-width: 700px) {
+  .notes-main { flex-direction: column; }
+  .note-list { width: 100%; }
+}
