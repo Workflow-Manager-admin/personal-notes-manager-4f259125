@@ -32,9 +32,14 @@ export class NotesComponent implements OnInit {
   // Adjust calls from this.supabase. → this.supabaseService.
 
   ngOnInit() {
-    // Only fetch notes in the browser (not SSR)
+    // Only fetch notes in the browser (not SSR/prerender)
     if (this.isBrowser) {
       this.fetchNotes();
+    } else {
+      // SSR/prerender: return with empty note lists, no loading or API/network
+      this.notes = [];
+      this.filteredNotes = [];
+      this.loading = false;
     }
   }
 
