@@ -45,7 +45,8 @@ app.get('**', (req, res, next) => {
     .render({
       bootstrap,
       documentFilePath: indexHtml,
-      url: `${protocol}://${headers.host}${originalUrl}`,
+      url:
+        `${(typeof protocol === 'string' && protocol) ? protocol : 'http'}://${(headers && typeof headers.host === 'string' && headers.host) ? headers.host : 'localhost'}${typeof originalUrl === 'string' ? originalUrl : ''}`,
       publicPath: browserDistFolder,
       providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
     })

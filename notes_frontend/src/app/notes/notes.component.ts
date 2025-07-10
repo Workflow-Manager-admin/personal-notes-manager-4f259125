@@ -20,17 +20,20 @@ export class NotesComponent implements OnInit {
   selectedNote: Note | null = null;
   editMode = false;
   saving = false;
+  isBrowser: boolean = false;
 
   @ViewChild('titleInput') titleInput?: ElementRef<HTMLInputElement>;
 
   // eslint-disable-next-line no-unused-vars
-  constructor(private readonly _supabaseService: SupabaseService) {}
+  constructor(private readonly _supabaseService: SupabaseService) {
+    this.isBrowser = typeof globalThis !== 'undefined' && !!globalThis.window;
+  }
 
   // Adjust calls from this.supabase. → this.supabaseService.
 
   ngOnInit() {
     // Only fetch notes in the browser (not SSR)
-    if (typeof window !== 'undefined' && window) {
+    if (this.isBrowser) {
       this.fetchNotes();
     }
   }
@@ -50,12 +53,6 @@ export class NotesComponent implements OnInit {
     });
   }
 
-  selectNote(note: Note) {
-    this.selectedNote = { ...note };
-    this.editMode = false;
-    this.safeSetTimeout(() => this.titleInput?.nativeElement?.focus(), 0);
-  }
-
   // Search/filter logic
   filterNotes() {
     if (!this.searchTerm?.trim()) {
@@ -73,15 +70,36 @@ export class NotesComponent implements OnInit {
     this.filterNotes();
   }
 
-  // NEW NOTE
+  // PUBLIC_INTERFACE
+  /** Safe wrapper for calling setTimeout on the browser; no-op if SSR. */
+  safeSetTimeout(fn: () => void, ms: number) {
+    if (this.isBrowser && typeof globalThis.setTimeout === 'function') {
+      globalThis.setTimeout(fn, ms);
+    }
+  }
+
+  // PUBLIC_INTERFACE
+  /** Select an active note, guard for browser/SSR. */
+  selectNote(note: Note) {
+    if (!this.isBrowser) return;
+    this.selectedNote = { ...note };
+    this.editMode = false;
+    this.safeSetTimeout(() => this.titleInput?.nativeElement?.focus(), 0);
+  }
+
+  // PUBLIC_INTERFACE
+  /** Setup form for creating a new note (browser-only). */
   createNewNote() {
+    if (!this.isBrowser) return;
     this.selectedNote = { title: '', content: '' };
     this.editMode = true;
     this.safeSetTimeout(() => this.titleInput?.nativeElement?.focus(), 0);
   }
 
-  // CRUD
+  // PUBLIC_INTERFACE
+  /** Save or update the current note (browser-only). */
   saveNote() {
+    if (!this.isBrowser) return;
     if (!this.selectedNote) return;
     this.saving = true;
     this.errorMsg = '';
@@ -115,12 +133,18 @@ export class NotesComponent implements OnInit {
     }
   }
 
+  // PUBLIC_INTERFACE
+  /** Edit the selected note. */
   editSelectedNote() {
+    if (!this.isBrowser) return;
     this.editMode = true;
     this.safeSetTimeout(() => this.titleInput?.nativeElement?.focus(), 0);
   }
 
+  // PUBLIC_INTERFACE
+  /** Cancel edit operation, browser only. */
   cancelEdit() {
+    if (!this.isBrowser) return;
     if (!this.selectedNote?.id) {
       this.selectedNote = null;
     }
@@ -128,14 +152,9 @@ export class NotesComponent implements OnInit {
   }
 
   // PUBLIC_INTERFACE
-  /** Safe wrapper for calling setTimeout on the browser; no-op if SSR. */
-  safeSetTimeout(fn: () => void, ms: number) {
-    if (typeof globalThis !== 'undefined' && typeof globalThis.setTimeout === 'function') {
-      globalThis.setTimeout(fn, ms);
-    }
-  }
-
+  /** Delete currently selected note, browser only. */
   deleteSelectedNote() {
+    if (!this.isBrowser) return;
     if (!this.selectedNote?.id || typeof this.selectedNote.id !== 'number') return;
     let confirmed = true;
     if (typeof globalThis !== 'undefined' && typeof globalThis.confirm === 'function') {
