@@ -1,7 +1,7 @@
 import { createRequire } from 'module';const require = createRequire(import.meta.url);
 import {
   Title
-} from "./chunk-M2QDVYW3.js";
+} from "./chunk-QDXVPD64.js";
 import {
   DOCUMENT,
   HashLocationStrategy,
@@ -10,7 +10,7 @@ import {
   LocationStrategy,
   PathLocationStrategy,
   ViewportScroller
-} from "./chunk-LCBAU2VD.js";
+} from "./chunk-L7QVVVSM.js";
 import {
   APP_BOOTSTRAP_LISTENER,
   APP_INITIALIZER,
@@ -57,7 +57,6 @@ import {
   makeEnvironmentProviders,
   publishExternalGlobalUtil,
   reflectComponentType,
-  require_cjs,
   require_operators,
   runInInjectionContext,
   setClassMetadata,
@@ -79,12 +78,15 @@ import {
   ɵɵloadQuery,
   ɵɵqueryRefresh,
   ɵɵsanitizeUrlOrResourceUrl
-} from "./chunk-62672OIL.js";
+} from "./chunk-KPFRYG3W.js";
+import {
+  require_cjs
+} from "./chunk-2K3BKASH.js";
 import {
   __spreadProps,
   __spreadValues,
   __toESM
-} from "./chunk-YHCV7DAQ.js";
+} from "./chunk-ANGF2IQY.js";
 
 // node_modules/@angular/router/fesm2022/router.mjs
 var import_rxjs = __toESM(require_cjs(), 1);
@@ -5944,4 +5946,4 @@ export {
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-LFT3NR4N.js.map
+//# sourceMappingURL=chunk-27QCOAY6.js.map

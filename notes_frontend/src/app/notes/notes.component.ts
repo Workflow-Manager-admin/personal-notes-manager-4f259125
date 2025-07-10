@@ -23,17 +23,21 @@ export class NotesComponent implements OnInit {
 
   @ViewChild('titleInput') titleInput?: ElementRef<HTMLInputElement>;
 
-  constructor(private readonly supabaseService: SupabaseService) {}
+  // eslint-disable-next-line no-unused-vars
+  constructor(private readonly _supabaseService: SupabaseService) {}
 
   // Adjust calls from this.supabase. → this.supabaseService.
 
   ngOnInit() {
-    this.fetchNotes();
+    // Only fetch notes in the browser (not SSR)
+    if (typeof window !== 'undefined' && window) {
+      this.fetchNotes();
+    }
   }
 
   fetchNotes() {
     this.loading = true;
-    this.supabaseService.getNotes().subscribe(({ data, error }) => {
+    this._supabaseService.getNotes().subscribe(({ data, error }) => {
       this.loading = false;
       if (error) {
         this.errorMsg = 'Failed to load notes.';
@@ -58,10 +62,10 @@ export class NotesComponent implements OnInit {
       this.filteredNotes = [...this.notes];
       return;
     }
-    const term = this.searchTerm.toLowerCase();
+    const term = (this.searchTerm ?? '').toLowerCase();
     this.filteredNotes = this.notes.filter(note =>
-      note.title.toLowerCase().includes(term) ||
-      note.content.toLowerCase().includes(term)
+      (note.title ?? '').toLowerCase().includes(term) ||
+      (note.content ?? '').toLowerCase().includes(term)
     );
   }
 
@@ -84,7 +88,7 @@ export class NotesComponent implements OnInit {
     const note = this.selectedNote;
     if (note.id && typeof note.id === 'number') {
       // update
-      this.supabaseService.updateNote({id: note.id, title: note.title, content: note.content}).subscribe(
+      this._supabaseService.updateNote({id: note.id, title: note.title, content: note.content}).subscribe(
         ({ error }) => {
           this.saving = false;
           if (error) {
@@ -97,7 +101,7 @@ export class NotesComponent implements OnInit {
       );
     } else {
       // add
-      this.supabaseService.addNote(note).subscribe(
+      this._supabaseService.addNote(note).subscribe(
         ({ error }) => {
           this.saving = false;
           if (error) {
@@ -126,22 +130,20 @@ export class NotesComponent implements OnInit {
   // PUBLIC_INTERFACE
   /** Safe wrapper for calling setTimeout on the browser; no-op if SSR. */
   safeSetTimeout(fn: () => void, ms: number) {
-    const win = typeof globalThis !== 'undefined' ? (globalThis as any) : undefined;
-    if (win && typeof win.setTimeout === 'function') {
-      win.setTimeout(fn, ms);
+    if (typeof globalThis !== 'undefined' && typeof globalThis.setTimeout === 'function') {
+      globalThis.setTimeout(fn, ms);
     }
   }
 
   deleteSelectedNote() {
     if (!this.selectedNote?.id || typeof this.selectedNote.id !== 'number') return;
     let confirmed = true;
-    const win = typeof globalThis !== 'undefined' ? (globalThis as any) : undefined;
-    if (win && typeof win.confirm === 'function') {
-      confirmed = win.confirm('Delete this note?');
+    if (typeof globalThis !== 'undefined' && typeof globalThis.confirm === 'function') {
+      confirmed = globalThis.confirm('Delete this note?');
     }
     if (!confirmed) return;
     this.saving = true;
-    this.supabaseService.deleteNote(this.selectedNote.id).subscribe(
+    this._supabaseService.deleteNote(this.selectedNote.id).subscribe(
       ({ error }) => {
         this.saving = false;
         if (error) {
